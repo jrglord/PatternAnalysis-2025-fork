@@ -33,7 +33,10 @@ class ConvnextBlock(nn.Module):
         self.dropout = nn.Dropout2d(p=dropout_p)
 
     def forward(self, x):
-        out = self.norm1(self.features(x))
+        out = self.layer_norm(self.depthwiseConv(x))
+        out = self.conv_1(out)
         out = self.act_layer(out)
+        out = self.conv_2(out)
+        out = self.layer_scale(out)
         out = self.dropout(out)
         return out
