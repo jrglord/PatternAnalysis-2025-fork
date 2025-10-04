@@ -15,7 +15,7 @@ class ConvnextBlock(nn.Module):
         # Structure:
 
         # Depthwise Conv2d
-        self.depthwiseConv = nn.Conv2d(in_channels=ch_dw, out_channels=ch_dw, kernel_size=7, stride=1, groups=ch_dw)
+        self.depthwiseConv = nn.Conv2d(in_channels=ch_dw, out_channels=ch_dw, kernel_size=7, stride=1, groups=ch_dw, padding=3)
 
         # Layer Norm
         self.layer_norm = norm_layer()
