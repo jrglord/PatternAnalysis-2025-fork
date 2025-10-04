@@ -7,7 +7,7 @@ import time
 import random
 
 class ConvnextBlock(nn.Module):
-    def __init__(self, ch_dw, kernel_size, stride=1, act_layer=nn.GELU, norm_layer=nn.LayerNorm, layer_scale_init_val=1e-6, drop_path_prob = 0.1):
+    def __init__(self, ch_dw, act_layer=nn.GELU, norm_layer=nn.LayerNorm, layer_scale_init_val=1e-6, drop_path_prob = 0.1):
         super().__init__()
 
         random.seed(42)
@@ -45,4 +45,15 @@ class ConvnextBlock(nn.Module):
         out = self.layer_scale.view(1, -1, 1, 1) * out
         out = self.drop_path_val * out
         out = x + out
+        return out
+
+class DownSamplingBlock(nn.Module):
+    def __init__(self, in_ch, norm_layer=nn.LayerNorm):
+        super().__init__()
+        self.layer_norm = norm_layer()
+        self.conv = nn.Conv2d(in_channels=in_ch, out_channels=in_ch*2, kernel_size=2, stride=2)
+
+    def forward(self, x):
+        out = self.layer_norm(x)
+        out = self.conv(out)
         return out
