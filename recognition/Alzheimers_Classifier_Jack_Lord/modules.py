@@ -57,3 +57,61 @@ class DownSamplingBlock(nn.Module):
         out = self.layer_norm(x)
         out = self.conv(out)
         return out
+    
+class ConvnextNetwork(nn.Module):
+    def __init__(self, in_ch, height, width):
+        super().__init__()
+        
+        self.in_channels = in_ch
+        self.channels_after_stem = in_ch*32
+        self.layer_before_pool_width = width/32
+        self.layer_before_pool_height = height/32
+        self.final_num_chs = self.channels_after_stem*8
+
+        self.init_conv = nn.Conv2d(in_channels=in_ch, out_channels=self.channels_after_stem, kernel_size=4, stride=4)
+        self.layer_norm = nn.LayerNorm()
+        self.glob_avg_pool = nn.AvgPool2d((self.layer_before_pool_height, self.layer_before_pool_width))
+        self.linear_layer = nn.Linear(self.final_num_chs, 2)
+        self.softmax_layer = nn.Softmax()
+
+    def forward(self, x):
+        out = self.init_conv(x)
+        out = self.layer_norm(out)
+        
+        current_channels = self.channels_after_stem
+        conv_block = ConvnextBlock(current_channels)
+        ds_block = DownSamplingBlock(current_channels)
+
+        for i in range(3):
+            out = conv_block(out)
+        out = ds_block(out)
+
+        current_channels = current_channels*2
+        conv_block = ConvnextBlock(current_channels)
+        ds_block = DownSamplingBlock(current_channels)
+
+        for i in range(3):
+            out = conv_block(out)
+        out = ds_block(out)
+
+        current_channels = current_channels*2
+        conv_block = ConvnextBlock(current_channels)
+        ds_block = DownSamplingBlock(current_channels)
+
+        for i in range(9):
+            out = conv_block(out)
+        out = ds_block(out)
+
+        current_channels = current_channels*2
+        conv_block = ConvnextBlock(current_channels)
+        ds_block = DownSamplingBlock(current_channels)
+
+        for i in range(3):
+            out = conv_block(out)
+        out = ds_block(out)
+
+        out = self.glob_avg_pool(out)
+        out = self.layer_norm(out)
+        out = self.linear_layer(out)
+        out = self.softmax_layer(out)
+        return out
