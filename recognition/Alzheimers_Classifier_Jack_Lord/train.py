@@ -15,7 +15,7 @@ num_classes = 2
 width = 256
 height = 240
 
-model = ConvnextNetwork(num_start_channels, num_classes, width, height)
+model = ConvnextNetwork(num_start_channels, num_classes, width, height, device)
 model = model.to(device)
 
 criterion = nn.CrossEntropyLoss()
