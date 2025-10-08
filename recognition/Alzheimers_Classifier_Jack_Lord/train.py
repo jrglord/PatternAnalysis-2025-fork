@@ -29,6 +29,8 @@ for epoch in range(num_epochs):
     for i, (images, labels) in enumerate(train_loader):
         images = images.to(device)
         labels = labels.to(device)
+        print("images:")
+        print(images.shape)
 
         # Forward pass
         outputs = model(images)

@@ -63,23 +63,27 @@ class ConvnextNetwork(nn.Module):
         super().__init__()
         
         self.in_channels = in_ch
-        self.channels_after_stem = in_ch*32
-        self.layer_before_pool_width = width/32
-        self.layer_before_pool_height = height/32
-        self.final_num_chs = self.channels_after_stem*8
+        self.after_stem_num_chs = in_ch*32
+        self.after_stem_width = int(width/4)
+        self.after_stem_height = int(height/4)
+        self.layer_before_pool_width = int(width/32)
+        self.layer_before_pool_height = int(height/32)
+        self.final_num_chs = self.after_stem_num_chs*8
         self.device = device
 
-        self.init_conv = nn.Conv2d(in_channels=in_ch, out_channels=self.channels_after_stem, kernel_size=4, stride=4)
+        self.init_conv = nn.Conv2d(in_channels=in_ch, out_channels=self.after_stem_num_chs, kernel_size=4, stride=4)
         self.glob_avg_pool = nn.AvgPool2d((self.layer_before_pool_height, self.layer_before_pool_width))
         self.linear_layer = nn.Linear(self.final_num_chs, num_classes)
         self.softmax_layer = nn.Softmax()
 
     def forward(self, x):
+        print(x.shape)
         out = self.init_conv(x)
-        layer_norm = nn.LayerNorm(self.channels_after_stem).to(self.device)
+        print(out.shape)
+        layer_norm = nn.LayerNorm([self.after_stem_num_chs, self.after_stem_height, self.after_stem_width]).to(self.device)
         out = layer_norm(out)
         
-        current_channels = self.channels_after_stem
+        current_channels = self.after_stem_num_chs
         conv_block = ConvnextBlock(current_channels)
         ds_block = DownSamplingBlock(current_channels)
 
@@ -112,7 +116,7 @@ class ConvnextNetwork(nn.Module):
         out = ds_block(out)
 
         out = self.glob_avg_pool(out)
-        layer_norm = nn.LayerNorm(self.final_num_chs).to(self.device)
+        layer_norm = nn.LayerNorm([self.final_num_chs, 1, 1]).to(self.device)
         out = layer_norm(out)
         out = self.linear_layer(out)
         out = self.softmax_layer(out)
