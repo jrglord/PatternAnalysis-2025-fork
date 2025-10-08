@@ -126,6 +126,8 @@ class ConvnextNetwork(nn.Module):
         layer_norm = nn.LayerNorm([self.final_num_chs, 1, 1]).to(self.device)
         out = layer_norm(out)
         print("out shape after norm: ", out.shape)
+        out = out.squeeze(-1).squeeze(-1)
+        print("out shape after squeezing: ", out.shape)
         out = self.linear_layer(out)
         print("out shape after linear layer: ", out.shape)
         out = self.softmax_layer(out)
