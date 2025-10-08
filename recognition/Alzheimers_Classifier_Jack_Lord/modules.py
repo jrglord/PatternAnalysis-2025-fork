@@ -7,10 +7,11 @@ import time
 import random
 
 class ConvnextBlock(nn.Module):
-    def __init__(self, ch_dw, act_layer=nn.GELU, norm_layer=nn.LayerNorm, layer_scale_init_val=1e-6, drop_path_prob = 0.1):
+    def __init__(self, ch_dw, device, act_layer=nn.GELU, layer_scale_init_val=1e-6, drop_path_prob = 0.1):
         super().__init__()
 
         random.seed(42)
+        self.device = device
 
         # Structure:
 
@@ -18,7 +19,6 @@ class ConvnextBlock(nn.Module):
         self.depthwiseConv = nn.Conv2d(in_channels=ch_dw, out_channels=ch_dw, kernel_size=7, stride=1, groups=ch_dw, padding=3)
 
         # Layer Norm
-        self.layer_norm = norm_layer()
 
         # Conv2d
         self.conv_1 = nn.Conv2d(in_channels=ch_dw, out_channels=4*ch_dw, kernel_size=1, stride=1)
@@ -38,7 +38,11 @@ class ConvnextBlock(nn.Module):
             self.drop_path_val = 0
 
     def forward(self, x):
-        out = self.layer_norm(self.depthwiseConv(x))
+
+        # Layer Norm
+        layer_norm = nn.LayerNorm([x.shape[1], x.shape[2], x.shape[3]]).to(self.device)
+
+        out = layer_norm(self.depthwiseConv(x))
         out = self.conv_1(out)
         out = self.act_layer(out)
         out = self.conv_2(out)
@@ -48,13 +52,14 @@ class ConvnextBlock(nn.Module):
         return out
 
 class DownSamplingBlock(nn.Module):
-    def __init__(self, in_ch, norm_layer=nn.LayerNorm):
+    def __init__(self, in_ch, device):
         super().__init__()
-        self.layer_norm = norm_layer()
+        self.device = device
         self.conv = nn.Conv2d(in_channels=in_ch, out_channels=in_ch*2, kernel_size=2, stride=2)
 
     def forward(self, x):
-        out = self.layer_norm(x)
+        layer_norm = nn.LayerNorm([x.shape[1], x.shape[2], x.shape[3]]).to(self.device)
+        out = layer_norm(x)
         out = self.conv(out)
         return out
     
@@ -84,32 +89,32 @@ class ConvnextNetwork(nn.Module):
         out = layer_norm(out)
         
         current_channels = self.after_stem_num_chs
-        conv_block = ConvnextBlock(current_channels)
-        ds_block = DownSamplingBlock(current_channels)
+        conv_block = ConvnextBlock(current_channels, self.device)
+        ds_block = DownSamplingBlock(current_channels, self.device)
 
         for i in range(3):
             out = conv_block(out)
         out = ds_block(out)
 
         current_channels = current_channels*2
-        conv_block = ConvnextBlock(current_channels)
-        ds_block = DownSamplingBlock(current_channels)
+        conv_block = ConvnextBlock(current_channels, self.device)
+        ds_block = DownSamplingBlock(current_channels, self.device)
 
         for i in range(3):
             out = conv_block(out)
         out = ds_block(out)
 
         current_channels = current_channels*2
-        conv_block = ConvnextBlock(current_channels)
-        ds_block = DownSamplingBlock(current_channels)
+        conv_block = ConvnextBlock(current_channels, self.device)
+        ds_block = DownSamplingBlock(current_channels, self.device)
 
         for i in range(9):
             out = conv_block(out)
         out = ds_block(out)
 
         current_channels = current_channels*2
-        conv_block = ConvnextBlock(current_channels)
-        ds_block = DownSamplingBlock(current_channels)
+        conv_block = ConvnextBlock(current_channels, self.device)
+        ds_block = DownSamplingBlock(current_channels, self.device)
 
         for i in range(3):
             out = conv_block(out)
