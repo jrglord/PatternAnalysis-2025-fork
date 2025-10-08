@@ -76,7 +76,8 @@ class ConvnextNetwork(nn.Module):
 
     def forward(self, x):
         out = self.init_conv(x)
-        out = self.layer_norm(out)
+        layer_norm = nn.LayerNorm(self.channels_after_stem)
+        out = layer_norm(out)
         
         current_channels = self.channels_after_stem
         conv_block = ConvnextBlock(current_channels)
@@ -111,7 +112,8 @@ class ConvnextNetwork(nn.Module):
         out = ds_block(out)
 
         out = self.glob_avg_pool(out)
-        out = self.layer_norm(out)
+        layer_norm = nn.LayerNorm(self.final_num_chs)
+        out = layer_norm(out)
         out = self.linear_layer(out)
         out = self.softmax_layer(out)
         return out
