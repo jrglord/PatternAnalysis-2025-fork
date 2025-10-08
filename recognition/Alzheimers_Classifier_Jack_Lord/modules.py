@@ -69,7 +69,6 @@ class ConvnextNetwork(nn.Module):
         self.final_num_chs = self.channels_after_stem*8
 
         self.init_conv = nn.Conv2d(in_channels=in_ch, out_channels=self.channels_after_stem, kernel_size=4, stride=4)
-        self.layer_norm = nn.LayerNorm()
         self.glob_avg_pool = nn.AvgPool2d((self.layer_before_pool_height, self.layer_before_pool_width))
         self.linear_layer = nn.Linear(self.final_num_chs, num_classes)
         self.softmax_layer = nn.Softmax()
