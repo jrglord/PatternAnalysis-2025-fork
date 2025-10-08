@@ -82,10 +82,8 @@ class ConvnextNetwork(nn.Module):
         self.softmax_layer = nn.Softmax()
 
     def forward(self, x):
-
-        print("1: ", x.shape)
         out = self.init_conv(x)
-        print("2: ", out.shape)
+
         layer_norm = nn.LayerNorm([self.after_stem_num_chs, self.after_stem_height, self.after_stem_width]).to(self.device)
         out = layer_norm(out)
         
@@ -96,7 +94,7 @@ class ConvnextNetwork(nn.Module):
         for i in range(3):
             out = conv_block(out)
         out = ds_block(out)
-        print("3: ", out.shape)
+
         current_channels = current_channels*2
         conv_block = ConvnextBlock(current_channels, self.device)
         ds_block = DownSamplingBlock(current_channels, self.device)
@@ -104,7 +102,7 @@ class ConvnextNetwork(nn.Module):
         for i in range(3):
             out = conv_block(out)
         out = ds_block(out)
-        print("4: ", out.shape)
+
         current_channels = current_channels*2
         conv_block = ConvnextBlock(current_channels, self.device)
         ds_block = DownSamplingBlock(current_channels, self.device)
@@ -112,24 +110,17 @@ class ConvnextNetwork(nn.Module):
         for i in range(9):
             out = conv_block(out)
         out = ds_block(out)
-        print("5: ", out.shape)
+
         current_channels = current_channels*2
         conv_block = ConvnextBlock(current_channels, self.device)
 
         for i in range(3):
             out = conv_block(out)
 
-        print("out shape before pooling:")
-        print("6: ", out.shape)
         out = self.glob_avg_pool(out)
-        print("out shape after pooling: ", out.shape)
         layer_norm = nn.LayerNorm([self.final_num_chs, 1, 1]).to(self.device)
         out = layer_norm(out)
-        print("out shape after norm: ", out.shape)
         out = out.squeeze(-1).squeeze(-1)
-        print("out shape after squeezing: ", out.shape)
         out = self.linear_layer(out)
-        print("out shape after linear layer: ", out.shape)
         out = self.softmax_layer(out)
-        print("out shape after softmax: ", out.shape)
         return out
