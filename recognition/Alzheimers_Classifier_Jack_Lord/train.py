@@ -27,10 +27,9 @@ print("> Training")
 start = time.time() #time generation
 for epoch in range(num_epochs):
     for i, (images, labels) in enumerate(train_loader):
+        print("i: ",i)
         images = images.to(device)
         labels = labels.to(device)
-        print("images:")
-        print(images.shape)
 
         # Forward pass
         outputs = model(images)
