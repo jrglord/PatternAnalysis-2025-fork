@@ -30,7 +30,7 @@ class ConvnextBlock(nn.Module):
         self.conv_2 = nn.Conv2d(in_channels=4*ch_dw, out_channels=ch_dw, kernel_size=1, stride=1)
 
         # Layer Scale
-        self.layer_scale = nn.Parameter(torch.ones(ch_dw*layer_scale_init_val))
+        self.layer_scale = nn.Parameter(torch.ones(ch_dw)*layer_scale_init_val)
 
         # Drop Path
         self.drop_path_val = 1
