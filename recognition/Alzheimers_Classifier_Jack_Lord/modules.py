@@ -59,7 +59,7 @@ class DownSamplingBlock(nn.Module):
         return out
     
 class ConvnextNetwork(nn.Module):
-    def __init__(self, in_ch, height, width):
+    def __init__(self, in_ch, num_classes, width, height):
         super().__init__()
         
         self.in_channels = in_ch
@@ -71,7 +71,7 @@ class ConvnextNetwork(nn.Module):
         self.init_conv = nn.Conv2d(in_channels=in_ch, out_channels=self.channels_after_stem, kernel_size=4, stride=4)
         self.layer_norm = nn.LayerNorm()
         self.glob_avg_pool = nn.AvgPool2d((self.layer_before_pool_height, self.layer_before_pool_width))
-        self.linear_layer = nn.Linear(self.final_num_chs, 2)
+        self.linear_layer = nn.Linear(self.final_num_chs, num_classes)
         self.softmax_layer = nn.Softmax()
 
     def forward(self, x):
