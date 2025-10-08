@@ -16,18 +16,18 @@ class ConvnextBlock(nn.Module):
         # Structure:
 
         # Depthwise Conv2d
-        self.depthwiseConv = nn.Conv2d(in_channels=ch_dw, out_channels=ch_dw, kernel_size=7, stride=1, groups=ch_dw, padding=3)
+        self.depthwiseConv = nn.Conv2d(in_channels=ch_dw, out_channels=ch_dw, kernel_size=7, stride=1, groups=ch_dw, padding=3).to(device)
 
         # Layer Norm
 
         # Conv2d
-        self.conv_1 = nn.Conv2d(in_channels=ch_dw, out_channels=4*ch_dw, kernel_size=1, stride=1)
+        self.conv_1 = nn.Conv2d(in_channels=ch_dw, out_channels=4*ch_dw, kernel_size=1, stride=1).to(device)
 
         # GELU
         self.act_layer = act_layer()
 
         # Conv2d
-        self.conv_2 = nn.Conv2d(in_channels=4*ch_dw, out_channels=ch_dw, kernel_size=1, stride=1)
+        self.conv_2 = nn.Conv2d(in_channels=4*ch_dw, out_channels=ch_dw, kernel_size=1, stride=1).to(device)
 
         # Layer Scale
         self.layer_scale = nn.Parameter(torch.ones(ch_dw)*layer_scale_init_val)
@@ -41,12 +41,12 @@ class ConvnextBlock(nn.Module):
 
         # Layer Norm
         layer_norm = nn.LayerNorm([x.shape[1], x.shape[2], x.shape[3]]).to(self.device)
-
-        out = layer_norm(self.depthwiseConv(x))
+        out = self.depthwiseConv(x)
+        out = layer_norm(out)
         out = self.conv_1(out)
         out = self.act_layer(out)
         out = self.conv_2(out)
-        out = self.layer_scale.view(1, -1, 1, 1) * out
+        out = self.layer_scale.view(1, -1, 1, 1).to(self.device) * out
         out = self.drop_path_val * out
         out = x + out
         return out
@@ -55,7 +55,7 @@ class DownSamplingBlock(nn.Module):
     def __init__(self, in_ch, device):
         super().__init__()
         self.device = device
-        self.conv = nn.Conv2d(in_channels=in_ch, out_channels=in_ch*2, kernel_size=2, stride=2)
+        self.conv = nn.Conv2d(in_channels=in_ch, out_channels=in_ch*2, kernel_size=2, stride=2).to(device)
 
     def forward(self, x):
         layer_norm = nn.LayerNorm([x.shape[1], x.shape[2], x.shape[3]]).to(self.device)
@@ -76,15 +76,16 @@ class ConvnextNetwork(nn.Module):
         self.final_num_chs = self.after_stem_num_chs*8
         self.device = device
 
-        self.init_conv = nn.Conv2d(in_channels=in_ch, out_channels=self.after_stem_num_chs, kernel_size=4, stride=4)
+        self.init_conv = nn.Conv2d(in_channels=in_ch, out_channels=self.after_stem_num_chs, kernel_size=4, stride=4).to(device)
         self.glob_avg_pool = nn.AvgPool2d((self.layer_before_pool_height, self.layer_before_pool_width))
         self.linear_layer = nn.Linear(self.final_num_chs, num_classes)
         self.softmax_layer = nn.Softmax()
 
     def forward(self, x):
-        print(x.shape)
+
+        print("1: ", x.shape)
         out = self.init_conv(x)
-        print(out.shape)
+        print("2: ", out.shape)
         layer_norm = nn.LayerNorm([self.after_stem_num_chs, self.after_stem_height, self.after_stem_width]).to(self.device)
         out = layer_norm(out)
         
@@ -95,7 +96,7 @@ class ConvnextNetwork(nn.Module):
         for i in range(3):
             out = conv_block(out)
         out = ds_block(out)
-
+        print("3: ", out.shape)
         current_channels = current_channels*2
         conv_block = ConvnextBlock(current_channels, self.device)
         ds_block = DownSamplingBlock(current_channels, self.device)
@@ -103,7 +104,7 @@ class ConvnextNetwork(nn.Module):
         for i in range(3):
             out = conv_block(out)
         out = ds_block(out)
-
+        print("4: ", out.shape)
         current_channels = current_channels*2
         conv_block = ConvnextBlock(current_channels, self.device)
         ds_block = DownSamplingBlock(current_channels, self.device)
@@ -111,18 +112,22 @@ class ConvnextNetwork(nn.Module):
         for i in range(9):
             out = conv_block(out)
         out = ds_block(out)
-
+        print("5: ", out.shape)
         current_channels = current_channels*2
         conv_block = ConvnextBlock(current_channels, self.device)
-        ds_block = DownSamplingBlock(current_channels, self.device)
 
         for i in range(3):
             out = conv_block(out)
-        out = ds_block(out)
 
+        print("out shape before pooling:")
+        print("6: ", out.shape)
         out = self.glob_avg_pool(out)
+        print("out shape after pooling: ", out.shape)
         layer_norm = nn.LayerNorm([self.final_num_chs, 1, 1]).to(self.device)
         out = layer_norm(out)
+        print("out shape after norm: ", out.shape)
         out = self.linear_layer(out)
+        print("out shape after linear layer: ", out.shape)
         out = self.softmax_layer(out)
+        print("out shape after softmax: ", out.shape)
         return out
