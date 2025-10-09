@@ -8,7 +8,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Using {device}")
 
 # Hyper-parameters
-num_epochs = 3
+num_epochs = 5
 learning_rate = 1e-3
 num_start_channels = 3
 num_classes = 2
@@ -40,9 +40,7 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
 
-        if (i+1) % 100 == 0:
-            print ("Epoch [{}/{}], Step [{}/{}] Loss: {:.5f}"
-                    .format(epoch+1, num_epochs, i+1, total_step, loss.item()))
+    print ("Epoch [{}/{}], Step [{}/{}] Loss: {:.5f}".format(epoch+1, num_epochs, i+1, total_step, loss.item()))
 
 end = time.time()
 elapsed = end - start
