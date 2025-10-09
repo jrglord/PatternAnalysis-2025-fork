@@ -67,3 +67,13 @@ with torch.no_grad():
 end = time.time()
 elapsed = end - start
 print("Testing took " + str(elapsed) + " secs or " + str(elapsed/60) + " mins in total")
+
+
+"""
+25% of dataset:
+
+Training took 5748.528654336929 secs or 95.80881090561549 mins in total
+> Testing
+Test Accuracy: 47.68888888888889 %
+Testing took 701.1007871627808 secs or 11.68501311937968 mins in total
+"""
