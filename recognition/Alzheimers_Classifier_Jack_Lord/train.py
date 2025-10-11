@@ -9,7 +9,7 @@ print(f"Using {device}")
 
 # Hyper-parameters
 num_epochs = 5
-learning_rate = 1e-2
+learning_rate = 1e-5
 num_start_channels = 3
 num_classes = 2
 width = 256
