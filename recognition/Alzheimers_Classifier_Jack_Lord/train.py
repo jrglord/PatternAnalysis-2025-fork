@@ -20,7 +20,7 @@ model = model.to(device)
 
 criterion = nn.CrossEntropyLoss()
 total_step = len(train_loader)
-optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
 
 model.train()
 print("> Training")
