@@ -40,7 +40,9 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay
 model.train()
 print("> Training")
 start = time.time() #time generation
+
 for epoch in range(num_epochs):
+    epoch_loss_sum = 0
     for i, (images, labels) in enumerate(train_loader):
         print("i: ",i)
         images = images.to(device)
@@ -54,8 +56,9 @@ for epoch in range(num_epochs):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+        epoch_loss_sum += loss.item()
 
-    print ("Epoch [{}/{}], Step [{}/{}] Loss: {:.5f}".format(epoch+1, num_epochs, i+1, total_step, loss.item()))
+    print ("Epoch [{}/{}], Avg. Loss: {:.5f}".format(epoch+1, num_epochs, epoch_loss_sum/(i+1)))
 
 end = time.time()
 elapsed = end - start
