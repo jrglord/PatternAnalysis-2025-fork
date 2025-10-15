@@ -2,6 +2,7 @@
 import torch
 from modules import *
 from dataset import *
+from torchvision.models import convnext_tiny, ConvNeXt_Tiny_Weights
 
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -15,7 +16,20 @@ num_classes = 2
 width = 256
 height = 240
 
-model = ConvnextNetwork(num_start_channels, num_classes, width, height, device)
+# Local model
+#model = ConvnextNetwork(num_start_channels, num_classes, width, height, device)
+
+# Load pre-trained model and weights
+weights = ConvNeXt_Tiny_Weights.IMAGENET1K_V1
+model = convnext_tiny(weights)
+model.classifier[2] = nn.Linear(768, 2)
+
+# Freezes all weights except classification layer
+for param in model.features.parameters():
+    param.requires_grad = False
+
+
+
 model = model.to(device)
 
 criterion = nn.CrossEntropyLoss()
