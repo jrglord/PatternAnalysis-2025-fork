@@ -108,3 +108,8 @@ Testing took 96.76594185829163 secs or 1.6127656976381937 mins in total
 """
 Training did better when only accessing the final layer vs the whole set of weights
 """
+
+# If loss is plateauing but chaotic then add dropout layers
+# If loss is plateauing and smooth then increase learning rate (maybe add a scheduler ot the lr) 0.5 is big lr wind down to 0.003
+# model.save and model.load
+# include saved model files in gitignore
