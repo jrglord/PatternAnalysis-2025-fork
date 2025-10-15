@@ -9,7 +9,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Using {device}")
 
 # Hyper-parameters
-num_epochs = 50
+num_epochs = 10
 learning_rate = 4e-3
 num_start_channels = 3
 num_classes = 2
