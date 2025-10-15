@@ -20,7 +20,8 @@ height = 240
 #model = ConvnextNetwork(num_start_channels, num_classes, width, height, device)
 
 # Load pre-trained model and weights
-weights = ConvNeXt_Tiny_Weights.IMAGENET1K_V1
+weights = ConvNeXt_Tiny_Weights.DEFAULT
+#IMAGENET1K_V1
 model = convnext_tiny(weights)
 model.classifier[2] = nn.Linear(768, 2)
 
