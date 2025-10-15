@@ -104,3 +104,7 @@ Training took 5493.959788799286 secs or 91.5659964799881 mins in total
 Test Accuracy: 48.4 %
 Testing took 96.76594185829163 secs or 1.6127656976381937 mins in total
 """
+
+"""
+Training did better when only accessing the final layer vs the whole set of weights
+"""
