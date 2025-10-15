@@ -7,9 +7,23 @@ import time
 torch.manual_seed(42)
 
 #Data
-transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (1.0,))])
+transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(0.11559005826711655, 0.2252865880727768)])
 
 full_trainset = torchvision.datasets.ImageFolder(root='recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/train', transform=transform)
+
+full_trainset_B = torchvision.datasets.ImageFolder(root='recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/train', transform = transforms.ToTensor())
+train_loader_full = torch.utils.data.DataLoader(full_trainset_B, batch_size=150, shuffle=False)
+mean = 0
+std = 0
+i=1
+for batch, _ in train_loader_full:
+    print(i)
+    i+=1
+    mean += batch.mean()
+    std += batch.std()
+mean /= len(train_loader_full)
+std /= len(train_loader_full)
+print(f"mean: {mean}, std: {std}")
 
 train_subset_size = len(full_trainset)//2
 train_subset_indices = torch.randperm(len(full_trainset))[:train_subset_size]
