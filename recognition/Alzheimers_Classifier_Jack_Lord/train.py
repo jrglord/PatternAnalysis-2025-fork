@@ -3,6 +3,15 @@ import torch
 from modules import *
 from dataset import *
 from torchvision.models import convnext_tiny, ConvNeXt_Tiny_Weights
+import matplotlib.pyplot as plt
+
+# Setting up pyplot
+plt.ion()
+fig, ax = plt.subplots()
+ax.set_xlim(0, 0)  # x-axis range
+ax.set_ylim(0, 0)  # y-axis range
+x_data = [] # number of iterations
+y_data = [] # loss in each iteration
 
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -17,13 +26,13 @@ width = 256
 height = 240
 
 # Local model
-#model = ConvnextNetwork(num_start_channels, num_classes, width, height, device)
+model = ConvnextNetwork(num_start_channels, num_classes, width, height, device)
 
 # Load pre-trained model and weights
-weights = ConvNeXt_Tiny_Weights.DEFAULT
+# weights = ConvNeXt_Tiny_Weights.DEFAULT
 #IMAGENET1K_V1
-model = convnext_tiny(weights)
-model.classifier[2] = nn.Linear(768, 2)
+# model = convnext_tiny(weights)
+# model.classifier[2] = nn.Linear(768, 2)
 
 # Freezes all weights except classification layer
 # for param in model.features.parameters():
@@ -40,10 +49,11 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay
 model.train()
 print("> Training")
 start = time.time() #time generation
-
+max_loss = 0
 for epoch in range(num_epochs):
     epoch_loss_sum = 0
     for i, (images, labels) in enumerate(train_loader):
+        
         print("i: ",i)
         images = images.to(device)
         labels = labels.to(device)
@@ -58,11 +68,28 @@ for epoch in range(num_epochs):
         optimizer.step()
         epoch_loss_sum += loss.item()
 
+        # Update max loss and iteration plot
+        x_data.append(i)
+        y_data.append(loss.item())
+        
+        if loss.item() > max_loss:
+            max_loss = loss.item()
+        ax.set_xlim(0, i)  # x-axis range
+        ax.set_ylim(0, max_loss)  # y-axis range
+
+        ax.clear()  # Clear previous frame
+        ax.plot(x_data, y_data, marker='o')
+        ax.set_xlabel("Iteration")
+        ax.set_ylabel("Loss")
+        ax.set_title("Convergence Plot")
+
     print ("Epoch [{}/{}], Avg. Loss: {:.5f}".format(epoch+1, num_epochs, epoch_loss_sum/(i+1)))
 
 end = time.time()
 elapsed = end - start
 print("Training took " + str(elapsed) + " secs or " + str(elapsed/60) + " mins in total")
+plt.ioff()  # Turn off interactive mode
+plt.show()
 
 # Test the model
 print("> Testing")
