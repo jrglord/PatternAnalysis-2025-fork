@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 # Setting up pyplot
 plt.ion()
 fig, ax = plt.subplots()
-ax.set_xlim(0, 0)  # x-axis range
-ax.set_ylim(0, 0)  # y-axis range
+ax.set_xlim(0, 1)  # x-axis range
+ax.set_ylim(0, 1)  # y-axis range
 x_data = [] # number of iterations
 y_data = [] # loss in each iteration
 
@@ -53,7 +53,8 @@ max_loss = 0
 for epoch in range(num_epochs):
     epoch_loss_sum = 0
     for i, (images, labels) in enumerate(train_loader):
-        
+        ax.set_xlim(0, i+1)  # x-axis range
+        ax.set_ylim(0, max_loss+0.1)  # y-axis range
         
         images = images.to(device)
         labels = labels.to(device)
@@ -71,13 +72,12 @@ for epoch in range(num_epochs):
         print(f"i: {i}, loss: {loss.item()}")
 
         # Update max loss and iteration plot
-        x_data.append(i)
+        x_data.append(i+epoch*36)
         y_data.append(loss.item())
         
         if loss.item() > max_loss:
             max_loss = loss.item()
-        ax.set_xlim(0, i)  # x-axis range
-        ax.set_ylim(0, max_loss)  # y-axis range
+        
 
         ax.clear()  # Clear previous frame
         ax.plot(x_data, y_data, marker='o')
