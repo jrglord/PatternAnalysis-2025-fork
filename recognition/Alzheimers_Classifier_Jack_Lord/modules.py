@@ -7,7 +7,7 @@ import time
 import random
 
 class ConvnextBlock(nn.Module):
-    def __init__(self, ch_dw, device, act_layer=nn.GELU, layer_scale_init_val=1e-6, drop_path_prob = 0.01):
+    def __init__(self, ch_dw, device, act_layer=nn.GELU, layer_scale_init_val=1e-6, drop_path_prob = 0.99):
         super().__init__()
 
         random.seed(42)
