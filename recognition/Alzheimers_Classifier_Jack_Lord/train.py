@@ -18,7 +18,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Using {device}")
 
 # Hyper-parameters
-num_epochs = 5
+num_epochs = 3
 learning_rate = 4e-3
 num_start_channels = 3
 num_classes = 2
@@ -91,7 +91,7 @@ end = time.time()
 elapsed = end - start
 print("Training took " + str(elapsed) + " secs or " + str(elapsed/60) + " mins in total")
 plt.ioff()  # Turn off interactive mode
-plt.show()
+
 
 # Test the model
 print("> Testing")
@@ -114,7 +114,7 @@ with torch.no_grad():
 end = time.time()
 elapsed = end - start
 print("Testing took " + str(elapsed) + " secs or " + str(elapsed/60) + " mins in total")
-
+plt.show()
 
 """
 25% of dataset:
