@@ -54,7 +54,7 @@ for epoch in range(num_epochs):
     epoch_loss_sum = 0
     for i, (images, labels) in enumerate(train_loader):
         
-        print("i: ",i)
+        
         images = images.to(device)
         labels = labels.to(device)
 
@@ -67,6 +67,8 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
         epoch_loss_sum += loss.item()
+
+        print(f"i: {i}, loss: {loss.item()}")
 
         # Update max loss and iteration plot
         x_data.append(i)
