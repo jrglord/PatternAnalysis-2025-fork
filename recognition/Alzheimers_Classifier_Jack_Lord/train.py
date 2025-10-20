@@ -1,5 +1,6 @@
 # train.py
 import torch
+from torch.optim.lr_scheduler import StepLR
 from modules import *
 from dataset import *
 from torchvision.models import convnext_tiny, ConvNeXt_Tiny_Weights
@@ -18,7 +19,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Using {device}")
 
 # Hyper-parameters
-num_epochs = 3
+num_epochs = 5
 learning_rate = 1e-3
 num_start_channels = 3
 num_classes = 2
@@ -44,7 +45,8 @@ model = model.to(device)
 
 criterion = nn.CrossEntropyLoss()
 total_step = len(train_loader)
-optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.05)
+optimiser = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.05)
+scheduler = StepLR(optimiser, step_size=1, gamma=0.2)
 
 model.train()
 print("> Training")
@@ -52,6 +54,7 @@ start = time.time() #time generation
 max_loss = 0
 for epoch in range(num_epochs):
     epoch_loss_sum = 0
+    print(f"Epoch {epoch+1} LR: {scheduler.get_lr()}")
     for i, (images, labels) in enumerate(train_loader):
         ax.set_xlim(0, i+1)  # x-axis range
         ax.set_ylim(0, max_loss+0.1)  # y-axis range
@@ -64,9 +67,9 @@ for epoch in range(num_epochs):
         loss = criterion(outputs, labels)
 
         # Backward and optimize
-        optimizer.zero_grad()
+        optimiser.zero_grad()
         loss.backward()
-        optimizer.step()
+        optimiser.step()
         epoch_loss_sum += loss.item()
 
         print(f"i: {i}, loss: {loss.item()}")
@@ -84,7 +87,7 @@ for epoch in range(num_epochs):
         ax.set_xlabel("Iteration")
         ax.set_ylabel("Loss")
         ax.set_title("Convergence Plot")
-
+    scheduler.step()
     print ("Epoch [{}/{}], Avg. Loss: {:.5f}".format(epoch+1, num_epochs, epoch_loss_sum/(i+1)))
 
 end = time.time()
