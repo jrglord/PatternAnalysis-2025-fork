@@ -72,7 +72,7 @@ for epoch in range(num_epochs):
         optimiser.step()
         epoch_loss_sum += loss.item()
 
-        print(f"i: {i}, lr: {scheduler.get_lr}, loss: {loss.item()}")
+        print(f"i: {i}, lr: {scheduler.get_lr()}, loss: {loss.item()}")
 
         # Update max loss and iteration plot
         x_data.append(i+epoch*36)
