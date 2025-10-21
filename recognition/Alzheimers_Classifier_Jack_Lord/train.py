@@ -54,7 +54,7 @@ start = time.time() #time generation
 max_loss = 0
 for epoch in range(num_epochs):
     epoch_loss_sum = 0
-    print(f"Epoch {epoch+1} LR: {scheduler.get_lr()}")
+    print(f"Epoch {epoch+1} start:")
     for i, (images, labels) in enumerate(train_loader):
         ax.set_xlim(0, i+1)  # x-axis range
         ax.set_ylim(0, max_loss+0.1)  # y-axis range
@@ -72,7 +72,7 @@ for epoch in range(num_epochs):
         optimiser.step()
         epoch_loss_sum += loss.item()
 
-        print(f"i: {i}, loss: {loss.item()}")
+        print(f"i: {i}, lr: {scheduler.get_lr}, loss: {loss.item()}")
 
         # Update max loss and iteration plot
         x_data.append(i+epoch*36)
