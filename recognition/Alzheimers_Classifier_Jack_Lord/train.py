@@ -1,6 +1,6 @@
 # train.py
 import torch
-from torch.optim.lr_scheduler import StepLR
+from torch.optim.lr_scheduler import StepLR, OneCycleLR
 from modules import *
 from dataset import *
 from torchvision.models import convnext_tiny, ConvNeXt_Tiny_Weights
@@ -20,7 +20,7 @@ print(f"Using {device}")
 
 # Hyper-parameters
 num_epochs = 7
-learning_rate = 1e-3
+learning_rate = 1e-4
 num_start_channels = 3
 num_classes = 2
 width = 256
@@ -46,7 +46,7 @@ model = model.to(device)
 criterion = nn.CrossEntropyLoss()
 total_step = len(train_loader)
 optimiser = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.05)
-scheduler = StepLR(optimiser, step_size=1, gamma=0.15)
+scheduler = OneCycleLR(optimiser, max_lr=0.01, steps_per_epoch=len(train_loader), epochs=num_epochs)
 
 model.train()
 print("> Training")
@@ -87,7 +87,9 @@ for epoch in range(num_epochs):
         ax.set_xlabel("Iteration")
         ax.set_ylabel("Loss")
         ax.set_title("Convergence Plot")
-    scheduler.step()
+        
+        scheduler.step()
+    
     print ("Epoch [{}/{}], Avg. Loss: {:.5f}".format(epoch+1, num_epochs, epoch_loss_sum/(i+1)))
 
 end = time.time()
