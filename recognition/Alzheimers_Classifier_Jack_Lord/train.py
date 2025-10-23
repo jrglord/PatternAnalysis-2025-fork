@@ -19,8 +19,8 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Using {device}")
 
 # Hyper-parameters
-num_epochs = 7
-learning_rate = 1e-4
+num_epochs = 8
+learning_rate = 0.5
 num_start_channels = 3
 num_classes = 2
 width = 256
@@ -46,7 +46,7 @@ model = model.to(device)
 criterion = nn.CrossEntropyLoss()
 total_step = len(train_loader)
 optimiser = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.05)
-scheduler = OneCycleLR(optimiser, max_lr=0.01, steps_per_epoch=len(train_loader), epochs=num_epochs)
+scheduler = StepLR(optimiser, step_size=1, gamma=0.15)
 
 model.train()
 print("> Training")
