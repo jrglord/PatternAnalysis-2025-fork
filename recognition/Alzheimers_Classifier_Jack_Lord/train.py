@@ -88,7 +88,7 @@ for epoch in range(num_epochs):
         ax.set_ylabel("Loss")
         ax.set_title("Convergence Plot")
         
-        scheduler.step()
+    scheduler.step()
     
     print ("Epoch [{}/{}], Avg. Loss: {:.5f}".format(epoch+1, num_epochs, epoch_loss_sum/(i+1)))
 
