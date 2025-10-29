@@ -6,6 +6,7 @@ from dataset import *
 from torchvision.models import convnext_tiny, ConvNeXt_Tiny_Weights
 import matplotlib.pyplot as plt
 from collections import Counter
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 # Setting up pyplot
 plt.ion()
@@ -20,7 +21,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Using {device}")
 
 # Hyper-parameters
-num_epochs = 5
+num_epochs = 3
 learning_rate = 1e-4
 num_start_channels = 3
 num_classes = 2
@@ -54,7 +55,7 @@ criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
 total_step = len(train_loader)
 optimiser = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.05)
 scheduler = StepLR(optimiser, step_size=1, gamma=0.9)
-
+print(full_trainset.class_to_idx)
 model.train()
 print("> Training")
 start = time.time() #time generation
@@ -109,6 +110,8 @@ plt.ioff()  # Turn off interactive mode
 
 # Test the model
 print("> Testing")
+all_predictions = [] #predicted for confusion matrix
+all_labels = [] #labels for confusion matrix
 start = time.time() #time generation
 model.eval()
 with torch.no_grad():
@@ -123,6 +126,9 @@ with torch.no_grad():
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
 
+        all_predictions.extend(predicted.cpu().numpy())
+        all_labels.extend(labels.cpu().numpy())
+
     print('Test Accuracy: {} %'.format(100 * correct / total))
 
 end = time.time()
@@ -130,6 +136,10 @@ elapsed = end - start
 print("Testing took " + str(elapsed) + " secs or " + str(elapsed/60) + " mins in total")
 plt.show()
 
+cm = confusion_matrix(all_labels, all_predictions)
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['AD', 'NC'])
+disp.plot(cmap=plt.cm.Blues)
+plt.show()
 """
 25% of dataset:
 
