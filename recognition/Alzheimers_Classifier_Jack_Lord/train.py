@@ -19,7 +19,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Using {device}")
 
 # Hyper-parameters
-num_epochs = 4
+num_epochs = 8
 learning_rate = 1e-2
 num_start_channels = 3
 num_classes = 2
@@ -52,10 +52,12 @@ model.train()
 print("> Training")
 start = time.time() #time generation
 max_loss = 0
+total_iter = 0
 for epoch in range(num_epochs):
     epoch_loss_sum = 0
     print(f"Epoch {epoch+1} start:")
     for i, (images, labels) in enumerate(train_loader):
+        total_iter += 1
         ax.set_xlim(0, i+1)  # x-axis range
         ax.set_ylim(0, max_loss+0.1)  # y-axis range
         
@@ -72,10 +74,10 @@ for epoch in range(num_epochs):
         optimiser.step()
         epoch_loss_sum += loss.item()
 
-        print(f"i: {i}, lr: {scheduler.get_lr()}, loss: {loss.item()}")
+        print(f"batch: {i+1}, lr: {scheduler.get_lr()}, loss: {loss.item()}")
 
         # Update max loss and iteration plot
-        x_data.append(i+epoch*36)
+        x_data.append(total_iter)
         y_data.append(loss.item())
         
         if loss.item() > max_loss:
