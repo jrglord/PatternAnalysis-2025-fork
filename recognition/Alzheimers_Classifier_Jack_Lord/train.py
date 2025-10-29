@@ -5,6 +5,7 @@ from modules import *
 from dataset import *
 from torchvision.models import convnext_tiny, ConvNeXt_Tiny_Weights
 import matplotlib.pyplot as plt
+from collections import Counter
 
 # Setting up pyplot
 plt.ion()
@@ -43,7 +44,13 @@ model = ConvnextNetwork(num_start_channels, num_classes, width, height, device)
 
 model = model.to(device)
 
-criterion = nn.CrossEntropyLoss()
+counts = Counter([label for _, label in full_trainset.samples])
+
+class_num_samples = torch.tensor([counts[0], counts[1]])
+class_weights = 1. / class_num_samples.float()
+class_weights = class_weights / class_weights.sum()
+
+criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
 total_step = len(train_loader)
 optimiser = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.05)
 scheduler = StepLR(optimiser, step_size=1, gamma=0.9)
