@@ -7,7 +7,7 @@ import time
 torch.manual_seed(42)
 
 #Data
-transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(0.0, 1.0)])
+transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(0.0, 1.0), transforms.RandomHorizontalFlip(p=0.5), transforms.RandomRotation(15)])
 # transforms.Resize(256), transforms.CenterCrop(224), 
 
 full_trainset = torchvision.datasets.ImageFolder(root='recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/train', transform=transform)
