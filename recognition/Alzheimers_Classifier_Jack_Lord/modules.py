@@ -83,7 +83,7 @@ class ConvnextNetwork(nn.Module):
 
     def forward(self, x):
         out = self.init_conv(x)
-        scale = 2
+        scale = (4/3)
         layer_norm = nn.LayerNorm([self.after_stem_num_chs, self.after_stem_height, self.after_stem_width]).to(self.device)
         out = layer_norm(out)
         
