@@ -91,7 +91,7 @@ class ConvnextNetwork(nn.Module):
         conv_block = ConvnextBlock(current_channels, self.device)
         ds_block = DownSamplingBlock(current_channels, self.device)
 
-        for i in range(3):
+        for i in range(1):#3
             out = conv_block(out)
         out = ds_block(out)
 
@@ -99,7 +99,7 @@ class ConvnextNetwork(nn.Module):
         conv_block = ConvnextBlock(current_channels, self.device)
         ds_block = DownSamplingBlock(current_channels, self.device)
 
-        for i in range(3):
+        for i in range(1):#3
             out = conv_block(out)
         out = ds_block(out)
 
@@ -107,14 +107,14 @@ class ConvnextNetwork(nn.Module):
         conv_block = ConvnextBlock(current_channels, self.device)
         ds_block = DownSamplingBlock(current_channels, self.device)
 
-        for i in range(9):
+        for i in range(3):#9
             out = conv_block(out)
         out = ds_block(out)
 
         current_channels = current_channels*2
         conv_block = ConvnextBlock(current_channels, self.device)
 
-        for i in range(3):
+        for i in range(1):#3
             out = conv_block(out)
 
         out = self.glob_avg_pool(out)
