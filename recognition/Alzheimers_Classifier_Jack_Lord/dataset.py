@@ -3,14 +3,18 @@ import torch.nn as nn
 import torchvision
 import torchvision.transforms as transforms
 import time
+from torch.utils.data import ConcatDataset
 
 torch.manual_seed(42)
 
 #Data
-transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(0.0, 1.0), transforms.RandomHorizontalFlip(p=0.3), transforms.RandomRotation(35)])
+mean = 0.0
+std = 1.0
+transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean, std), transforms.RandomHorizontalFlip(p=0.5), transforms.RandomRotation(25)])
 # transforms.Resize(256), transforms.CenterCrop(224), 
-
-full_trainset = torchvision.datasets.ImageFolder(root='recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/train', transform=transform)
+trainset_1 = torchvision.datasets.ImageFolder(root='recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/train', transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean, std)]))
+trainset_2 = torchvision.datasets.ImageFolder(root='recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/train', transform=transform)
+full_trainset = ConcatDataset([trainset_1, trainset_2])
 
 # full_trainset_B = torchvision.datasets.ImageFolder(root='recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/train', transform = transforms.ToTensor())
 # train_loader_full = torch.utils.data.DataLoader(full_trainset_B, batch_size=150, shuffle=False)
