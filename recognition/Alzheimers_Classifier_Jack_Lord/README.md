@@ -12,3 +12,5 @@
 ## Scheduler
 ## Class weights
 # Example run
+## train.py
+## predict.py
