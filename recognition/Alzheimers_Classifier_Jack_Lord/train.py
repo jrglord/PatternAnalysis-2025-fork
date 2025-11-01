@@ -21,7 +21,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Using {device}")
 
 # Hyper-parameters
-num_epochs = 5
+num_epochs = 1
 learning_rate = 1e-4
 num_start_channels = 3
 num_classes = 2
@@ -107,6 +107,9 @@ elapsed = end - start
 print("Training took " + str(elapsed) + " secs or " + str(elapsed/60) + " mins in total")
 plt.ioff()  # Turn off interactive mode
 
+# Save the model parameters
+torch.save(model.state_dict(), 'recognition/Alzheimers_Classifier_Jack_Lord/saved_models/saved_model.pth')
+print("> Model saved")
 
 # Test the model
 print("> Testing")
