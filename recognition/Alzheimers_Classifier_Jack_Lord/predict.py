@@ -23,9 +23,10 @@ model.load_state_dict(torch.load('recognition/Alzheimers_Classifier_Jack_Lord/sa
 model.eval()
 model = model.to(device)
 
-img = Image.open("recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/test/AD/388206_78.jpeg")
-img = transforms.ToTensor(img).unsqueeze(0).to(device)
-
+transform_predict = transforms.Compose([transforms.ToTensor()])
+img = Image.open("recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/test/AD/388206_78.jpeg").convert('RGB')
+img = transform_predict(img).unsqueeze(0).to(device)
+print(f"Image shape: {img.shape}")
 with torch.no_grad():
     output = model(img)
     _, predicted = torch.max(output.data, 1)
