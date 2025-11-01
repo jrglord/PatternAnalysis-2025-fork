@@ -53,7 +53,7 @@ class_weights = class_weights / class_weights.sum()
 
 criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
 total_step = len(train_loader)
-optimiser = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.05)
+optimiser = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.0)
 scheduler = StepLR(optimiser, step_size=1, gamma=0.9)
 print(full_trainset.class_to_idx)
 model.train()
