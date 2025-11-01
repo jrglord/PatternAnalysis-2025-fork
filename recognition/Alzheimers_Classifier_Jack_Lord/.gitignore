@@ -1,2 +1,3 @@
 /ADNI
-/pycache
+/__pycache__
+/saved_models
