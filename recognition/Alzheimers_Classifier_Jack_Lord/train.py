@@ -21,7 +21,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Using {device}")
 
 # Hyper-parameters
-num_epochs = 35
+num_epochs = 5
 learning_rate = 1e-4
 num_start_channels = 3
 num_classes = 2
@@ -53,7 +53,7 @@ class_weights = class_weights / class_weights.sum()
 
 criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
 total_step = len(train_loader)
-optimiser = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.0)
+optimiser = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.05)
 scheduler = StepLR(optimiser, step_size=1, gamma=0.9)
 print(full_trainset.class_to_idx)
 model.train()
@@ -71,7 +71,7 @@ for epoch in range(num_epochs):
         
         images = images.to(device)
         labels = labels.to(device)
-
+        labels = labels.long()
         # Forward pass
         outputs = model(images)
         loss = criterion(outputs, labels)

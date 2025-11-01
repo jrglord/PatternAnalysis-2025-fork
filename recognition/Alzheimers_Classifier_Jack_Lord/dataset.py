@@ -8,8 +8,8 @@ from torch.utils.data import ConcatDataset
 torch.manual_seed(42)
 
 #Data
-transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(0.0, 1.0), transforms.RandomHorizontalFlip(p=0.3), transforms.RandomRotation(35)])
-# transforms.Resize(256), transforms.CenterCrop(224), 
+transform = transforms.Compose([transforms.ToTensor(),  transforms.RandomHorizontalFlip(p=0.3), transforms.RandomRotation(35)])
+# transforms.Resize(256), transforms.CenterCrop(224), transforms.Normalize(0.5, 0.5),
 
 full_trainset = torchvision.datasets.ImageFolder(root='recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/train', transform=transform)
 
@@ -27,7 +27,7 @@ full_trainset = torchvision.datasets.ImageFolder(root='recognition/Alzheimers_Cl
 # std /= len(train_loader_full)
 # print(f"mean: {mean}, std: {std}")
 
-train_subset_size = len(full_trainset)//10
+train_subset_size = len(full_trainset)//1
 train_subset_indices = torch.randperm(len(full_trainset))[:train_subset_size]
 subset_trainset = torch.utils.data.Subset(full_trainset, train_subset_indices)
 
@@ -36,7 +36,7 @@ train_loader = torch.utils.data.DataLoader(subset_trainset, batch_size=32, shuff
 
 full_testset = torchvision.datasets.ImageFolder(root='recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/test', transform=transform)
 
-test_subset_size = len(full_testset)//10
+test_subset_size = len(full_testset)//1
 test_subset_indices = torch.randperm(len(full_testset))[:test_subset_size]
 subset_testset = torch.utils.data.Subset(full_testset, test_subset_indices)
 
