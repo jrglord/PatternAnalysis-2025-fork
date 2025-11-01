@@ -5,6 +5,9 @@ from dataset import *
 import torchvision.transforms as transforms
 import PIL.Image as Image
 
+# Input image
+img_path = "recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/test/AD/388206_78.jpeg"
+
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Using {device}")
@@ -24,12 +27,12 @@ model.eval()
 model = model.to(device)
 
 transform_predict = transforms.Compose([transforms.ToTensor()])
-img = Image.open("recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/test/AD/388206_78.jpeg").convert('RGB')
+img = Image.open(img_path).convert('RGB')
 img = transform_predict(img).unsqueeze(0).to(device)
-print(f"Image shape: {img.shape}")
+
 with torch.no_grad():
     output = model(img)
     _, predicted = torch.max(output.data, 1)
 
 predicted_class = ['AD', 'NC']
-print(f"Predicted class: {predicted_class[predicted]}")
+print(f"Predicted class for {img_path}: {predicted_class[predicted]}")
