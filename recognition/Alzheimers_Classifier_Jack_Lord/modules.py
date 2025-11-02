@@ -13,8 +13,6 @@ class ConvnextBlock(nn.Module):
         random.seed(42)
         self.device = device
 
-        # Structure:
-
         # Depthwise Conv2d
         self.depthwiseConv = nn.Conv2d(in_channels=ch_dw, out_channels=ch_dw, kernel_size=7, stride=1, groups=ch_dw, padding=3).to(device)
 
@@ -83,7 +81,7 @@ class ConvnextNetwork(nn.Module):
 
     def forward(self, x):
         out = self.init_conv(x)
-        scale = (4/3)
+
         layer_norm = nn.LayerNorm([self.after_stem_num_chs, self.after_stem_height, self.after_stem_width]).to(self.device)
         out = layer_norm(out)
         
@@ -91,7 +89,7 @@ class ConvnextNetwork(nn.Module):
         conv_block = ConvnextBlock(current_channels, self.device)
         ds_block = DownSamplingBlock(current_channels, self.device)
 
-        for i in range(3):#3
+        for i in range(3):
             out = conv_block(out)
         out = ds_block(out)
 
@@ -99,7 +97,7 @@ class ConvnextNetwork(nn.Module):
         conv_block = ConvnextBlock(current_channels, self.device)
         ds_block = DownSamplingBlock(current_channels, self.device)
 
-        for i in range(3):#3
+        for i in range(3):
             out = conv_block(out)
         out = ds_block(out)
 
@@ -107,23 +105,19 @@ class ConvnextNetwork(nn.Module):
         conv_block = ConvnextBlock(current_channels, self.device)
         ds_block = DownSamplingBlock(current_channels, self.device)
 
-        for i in range(9):#9
+        for i in range(9):
             out = conv_block(out)
         out = ds_block(out)
 
         current_channels = current_channels*2
         conv_block = ConvnextBlock(current_channels, self.device)
 
-        for i in range(3):#3
+        for i in range(3):
             out = conv_block(out)
 
         out = self.glob_avg_pool(out)
         layer_norm = nn.LayerNorm([self.final_num_chs, 1, 1]).to(self.device)
         out = layer_norm(out)
         out = out.squeeze(-1).squeeze(-1)
-        # print("out.shape: ", out.shape)
         out = self.linear_layer(out)
-        # print("out.shape: ", out.shape)
-        # print("out: ", out)
-        # out = self.softmax_layer(out)
         return out
