@@ -35,7 +35,7 @@ subset_trainset = torch.utils.data.Subset(full_trainset, train_subset_indices)
 train_loader = torch.utils.data.DataLoader(subset_trainset, batch_size=32, shuffle=True)
 
 
-full_testset = torchvision.datasets.ImageFolder(root='recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/test', transform=transform)
+full_testset = torchvision.datasets.ImageFolder(root='recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/test', transform=transforms.Compose([transforms.ToTensor()]))
 
 test_subset_size = len(full_testset)//1
 test_subset_indices = torch.randperm(len(full_testset))[:test_subset_size]
