@@ -19,8 +19,11 @@ Figure 3: Downsampling block architecture. Source: [1]
 <br>
 <br>
 ![218391_78](https://github.com/user-attachments/assets/9562cfbb-926c-4389-af83-af35c8b7a3c3)
-Figure 4: Example input from the class AD
 
+Figure 4: Example input from the class AD
+<br>
+<br>
+<br>
 # Dependencies
 In order to run this program the following dependencies need to be installed. Commands for installation are prescribed below:
 ## matplotlib 3.10.7
@@ -75,6 +78,10 @@ The AdamW optimiser was the implemented optimiser. This optimiser was more advan
 optimiser = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.05)
 ```
 ## Scheduler
+A step scheduler was applied to the learning rate for the network, ensuring that the learning rate (initially 1e-4) decreased by 10% in each epoch. This was implemented in order to stabilise training over time.
+```
+scheduler = StepLR(optimiser, step_size=1, gamma=0.9)
+```
 
 # Example run
 ## train.py
