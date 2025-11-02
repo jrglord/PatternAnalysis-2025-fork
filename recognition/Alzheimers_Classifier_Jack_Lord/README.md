@@ -21,10 +21,21 @@ An example of a typical ConvNeXT structure is shown in the figure below, althoug
 # Dependencies
 In order to ru this program the following dependencies need to be installed. Commands for installation are prescribed below:
 ## matplotlib 3.10.7
+```
+pip install matplotlib
+```
 ## Pillow 12.0.0
+```
+pip install Pillow
+```
 ## scikit_learn 1.7.2
-## torch 2.8.0+cu126
-## torchvision 0.23.0+cu126
+```
+pip install scikit_learn
+```
+## torch 2.8.0+cu126 and torchvision 0.23.0+cu126
+```
+pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+```
 
 # How to Run
 *train.py*
