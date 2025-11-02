@@ -55,9 +55,19 @@ When loading the images into datasets, image transforms are applied during prepr
 
 # Training Settings
 ## Class weights
-Weights were applied to each class to account for the differences in number of images between classes in the training set (class AD had 10,400 images, while class NC had 11,120 images). This ensured that losses in each class had the same impact on the loss function.
-## Loss Function
+Weights were applied to each class to account for the differences in number of images between classes in the training set (class AD had 10,400 images, while class NC had 11,120 images). This ensured that losses in each class had the same impact on the loss function. The weight of each class was the reciprocal of the number of images in that class.
+```
+counts = Counter([label for _, label in full_trainset.samples])
 
+class_num_samples = torch.tensor([counts[0], counts[1]])
+class_weights = 1. / class_num_samples.float()
+class_weights = class_weights / class_weights.sum()
+```
+## Loss Function
+Cross Entropy Loss was the loss function for the network, using the weights for each class:
+```
+criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
+```
 ## Optimiser
 ## Scheduler
 
