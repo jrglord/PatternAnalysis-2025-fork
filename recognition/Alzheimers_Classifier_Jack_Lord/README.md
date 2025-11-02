@@ -1,5 +1,6 @@
 # Model Architecture and Problem
-ConvNeXT is a modern Convolutional Neural Network (CNN) architecture that enhances traditional CNNs by integrating the design philosophy of Vision Transformers (ViTs). Vision Transformers are capable of achieving image recognition and classification by processing images as a series of patches and subsequently uses self-attention layers in order to learn the relationships between different pairs of patches across the image regardless of their proximity to each other.
+ConvNeXT is a modern Convolutional Neural Network (CNN) architecture that enhances traditional CNNs by integrating the design philosophy of Vision Transformers (ViTs) [1]. Vision Transformers are capable of achieving image recognition and classification by processing images as a series of patches and subsequently uses self-attention layers in order to learn the relationships between different pairs of patches across the image regardless of their proximity to each other. This provides the unique advantage of allowing training on broader patterns across the whole image, improving flexibility and accuracy, while traditional CNNs are limited to training based on patterns within close proximity to elements. ConvNeXT seeks to combine these two approaches by replicating this self-attention mechanism with the structure of typical CNNs. It achieves this by patchifying the image into 4x4 patches by beginning with a 4x4 convolution with stride 4, preventing overlap. Another modification inspired by Vision Transformer design was the replacement of ReLU (Rectified Linear Unit) as an activation layer (typically used in CNNs) with GELU (Gaussian Error Linear Unit) due to its implementation in ViTs [2].
+An example of a typical ConvNeXT structure is shown in the figure below, although for the purposes of this project's specific task, image input dimensions and subsequent block dimensions were modified, while the overall structure remained intact. The ConvNeXT block architecture and downsampling block architecture are displayed in figures 2 and 3.
 # Dependencies
 *pip installs for all libraries*
 # How to Run
@@ -14,3 +15,8 @@ ConvNeXT is a modern Convolutional Neural Network (CNN) architecture that enhanc
 # Example run
 ## train.py
 ## predict.py
+
+# Bibliography
+[1] 	GeeksforGeeks, “ConvNeXt,” SanchhayaEducation Private Limited, 15 July 2025. [Online]. Available: https://www.geeksforgeeks.org/computer-vision/convnext/. [Accessed 2 November 2025].
+[2] 	Z. Liu, H. Mao, C.-Y. Wu, C. Feichtenhofer, T. Darrell and S. Xie, “A ConvNet for the 2020s,” 2 Mar 2022. 
+
