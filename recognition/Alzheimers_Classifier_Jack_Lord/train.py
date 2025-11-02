@@ -30,40 +30,33 @@ height = 240
 
 # Local model
 model = ConvnextNetwork(num_start_channels, num_classes, width, height, device)
-
-# Load pre-trained model and weights
-# weights = ConvNeXt_Tiny_Weights.DEFAULT
-#IMAGENET1K_V1
-# model = convnext_tiny(weights)
-# model.classifier[2] = nn.Linear(768, 2)
-
-# Freezes all weights except classification layer
-# for param in model.features.parameters():
-#     param.requires_grad = False
-
-
-
 model = model.to(device)
 
+# Counting the number of images in each class and then calculating weights for each class based on image sample sizes
 counts = Counter([label for _, label in full_trainset.samples])
-
 class_num_samples = torch.tensor([counts[0], counts[1]])
 class_weights = 1. / class_num_samples.float()
 class_weights = class_weights / class_weights.sum()
 
+# Loss function, optimiser, and scheduler
 criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
-total_step = len(train_loader)
+#total_step = len(train_loader)
 optimiser = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.05)
 scheduler = StepLR(optimiser, step_size=1, gamma=0.9)
-print(full_trainset.class_to_idx)
+
 model.train()
 print("> Training")
+
 start = time.time() #time generation
 max_loss = 0
 total_iter = 0
+
+# Loop through each epoch
 for epoch in range(num_epochs):
     epoch_loss_sum = 0
     print(f"Epoch {epoch+1} start:")
+
+    # Loop through each batch
     for i, (images, labels) in enumerate(train_loader):
         total_iter += 1
         ax.set_xlim(0, i+1)  # x-axis range
@@ -72,6 +65,7 @@ for epoch in range(num_epochs):
         images = images.to(device)
         labels = labels.to(device)
         labels = labels.long()
+
         # Forward pass
         outputs = model(images)
         loss = criterion(outputs, labels)
@@ -139,33 +133,9 @@ elapsed = end - start
 print("Testing took " + str(elapsed) + " secs or " + str(elapsed/60) + " mins in total")
 plt.show()
 
+# Generate confusion matrix
 cm = confusion_matrix(all_labels, all_predictions)
 disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['AD', 'NC'])
 disp.plot(cmap=plt.cm.Blues)
 plt.show()
-"""
-25% of dataset:
 
-Training took 5748.528654336929 secs or 95.80881090561549 mins in total
-> Testing
-Test Accuracy: 47.68888888888889 %
-Testing took 701.1007871627808 secs or 11.68501311937968 mins in total
-"""
-
-"""
-25% of dataset (no softmax):
-
-Training took 5493.959788799286 secs or 91.5659964799881 mins in total
-> Testing
-Test Accuracy: 48.4 %
-Testing took 96.76594185829163 secs or 1.6127656976381937 mins in total
-"""
-
-"""
-Training did better when only accessing the final layer vs the whole set of weights
-"""
-
-# If loss is plateauing but chaotic then add dropout layers
-# If loss is plateauing and smooth then increase learning rate (maybe add a scheduler ot the lr) 0.5 is big lr wind down to 0.003
-# model.save and model.load
-# include saved model files in gitignore
