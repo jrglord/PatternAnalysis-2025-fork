@@ -51,7 +51,7 @@ This program provides the trained model's output for a single image file as inpu
 python predict.py
 ```
 # Pre-proccessing and Transforms
-When loading the images into datasets, image transforms are applied during preprocessing to convert the images into tensors and add variation to ensure generalisability
+When loading the images into datasets, image transforms are applied during preprocessing to convert the images into tensors and add variation to ensure generalisability. For both testing and training datasets, `transforms.ToTensor()` is applied. For the training dataset, transforms of `transforms.RandomHorizontalFlip(p=0.3)` and `transforms.RandomRotation(15)` are also applied to ensure that 30% of the training images are flipped and that the images are rotated randomly within the range of -15 degrees to 15 degrees, to improve generalisability.
 
 # Training Settings
 ## Loss Function
