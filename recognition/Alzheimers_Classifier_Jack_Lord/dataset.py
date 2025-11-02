@@ -9,7 +9,7 @@ from torch.utils.data import ConcatDataset
 torch.manual_seed(42)
 
 #Data
-transform = transforms.Compose([transforms.ToTensor(),  transforms.RandomHorizontalFlip(p=0.3), transforms.RandomRotation(35)])
+transform = transforms.Compose([transforms.ToTensor(),  transforms.RandomHorizontalFlip(p=0.3), transforms.RandomRotation(15)])
 # transforms.Resize(256), transforms.CenterCrop(224), transforms.Normalize(0.5, 0.5),
 
 full_trainset = torchvision.datasets.ImageFolder(root='recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/train', transform=transform)
