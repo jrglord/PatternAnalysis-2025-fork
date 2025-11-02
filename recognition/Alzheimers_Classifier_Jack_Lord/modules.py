@@ -32,8 +32,10 @@ class ConvnextBlock(nn.Module):
 
         # Drop Path
         self.drop_path_val = 1
-        if random.random() < drop_path_prob:
-            self.drop_path_val = 0
+
+        if self.training:
+            if random.random() < drop_path_prob:
+                self.drop_path_val = 0
 
     def forward(self, x):
 
@@ -45,7 +47,8 @@ class ConvnextBlock(nn.Module):
         out = self.act_layer(out)
         out = self.conv_2(out)
         out = self.layer_scale.view(1, -1, 1, 1).to(self.device) * out
-        out = self.drop_path_val * out
+        if self.training:
+            out = self.drop_path_val * out
         out = x + out
         return out
 
