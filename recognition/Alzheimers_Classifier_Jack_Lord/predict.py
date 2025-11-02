@@ -26,13 +26,16 @@ model.load_state_dict(torch.load('recognition/Alzheimers_Classifier_Jack_Lord/sa
 model.eval()
 model = model.to(device)
 
+# Apply tensor transform to the image and add batch dimension (B in [B, C, H, W]) so that it fits in the model
 transform_predict = transforms.Compose([transforms.ToTensor()])
 img = Image.open(img_path).convert('RGB')
 img = transform_predict(img).unsqueeze(0).to(device)
 
+# Model output
 with torch.no_grad():
     output = model(img)
     _, predicted = torch.max(output.data, 1)
 
+# Print statement
 predicted_class = ['AD', 'NC']
 print(f"Predicted class for {img_path}: {predicted_class[predicted]}")
