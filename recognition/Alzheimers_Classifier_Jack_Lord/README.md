@@ -17,8 +17,15 @@ Figure 3: Downsampling block architecture. Source: [1]
 <br>
 <br>
 An example of a typical ConvNeXT structure is shown in the figure below, although for the purposes of this project's specific task, image input dimensions and subsequent block dimensions were modified, while the overall structure remained intact. The ConvNeXT block architecture and downsampling block architecture are displayed in figures 2 and 3.
+
 # Dependencies
-*pip installs for all libraries*
+In order to ru this program the following dependencies need to be installed. Commands for installation are prescribed below:
+## matplotlib 3.10.7
+## Pillow 12.0.0
+## scikit_learn 1.7.2
+## torch 2.8.0+cu126
+## torchvision 0.23.0+cu126
+
 # How to Run
 *train.py*
 *predict.py*
