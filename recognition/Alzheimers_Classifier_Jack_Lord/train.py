@@ -3,10 +3,10 @@ import torch
 from torch.optim.lr_scheduler import StepLR, OneCycleLR
 from modules import *
 from dataset import *
-from torchvision.models import convnext_tiny, ConvNeXt_Tiny_Weights
 import matplotlib.pyplot as plt
 from collections import Counter
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import time
 
 # Setting up pyplot
 plt.ion()
