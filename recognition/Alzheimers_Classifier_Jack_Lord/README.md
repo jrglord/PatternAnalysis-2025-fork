@@ -69,6 +69,10 @@ Cross Entropy Loss was the loss function for the network, using the weights for 
 criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
 ```
 ## Optimiser
+The AdamW optimiser was the implemented optimiser. This optimiser was more advantageous than the typical Adam optimiser due to the added feature of weight decay, with a weight decay of 0.05 being implemented.
+```
+optimiser = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.05)
+```
 ## Scheduler
 
 # Example run
