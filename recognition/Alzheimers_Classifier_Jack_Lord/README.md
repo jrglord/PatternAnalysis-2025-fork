@@ -18,7 +18,8 @@ Figure 3: Downsampling block architecture. Source: [1]
 <br>
 <br>
 <br>
-
+![218391_78](https://github.com/user-attachments/assets/9562cfbb-926c-4389-af83-af35c8b7a3c3)
+Figure 4: Example input from the class AD
 
 # Dependencies
 In order to run this program the following dependencies need to be installed. Commands for installation are prescribed below:
