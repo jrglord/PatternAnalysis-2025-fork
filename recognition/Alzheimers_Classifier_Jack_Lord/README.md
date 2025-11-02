@@ -51,6 +51,8 @@ This program provides the trained model's output for a single image file as inpu
 python predict.py
 ```
 # Pre-proccessing and Transforms
+When loading the images into datasets, image transforms are applied during preprocessing to convert the images into tensors and add variation to ensure generalisability
+
 # Training Settings
 ## Loss Function
 ## Optimiser
