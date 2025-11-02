@@ -85,8 +85,24 @@ scheduler = StepLR(optimiser, step_size=1, gamma=0.9)
 
 # Example run
 ## train.py
-## predict.py
+```
+Training took 4610.22504067421 secs or 76.83708401123683 mins in total
+Test Accuracy: 50.34444444444444 %
+Testing took 109.41362714767456 secs or 1.8235604524612428 mins in total
+```
+<img width="1920" height="967" alt="convergence plot" src="https://github.com/user-attachments/assets/6f7152c7-129a-4a5c-866d-9baa7dffe975" />
+Figure 5: Convergence plot during training
+<img width="640" height="480" alt="comparison table" src="https://github.com/user-attachments/assets/1957628f-9748-43ce-8543-bf64bce551df" />
 
+Figure 6: Comparison table during testing
+## predict.py
+Some examples of outputs for predict.py:
+```
+Predicted class for recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/test/AD/388206_78.jpeg: AD
+```
+```
+Predicted class for recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/train/AD/218391_85.jpeg: AD
+```
 # Bibliography
 [1] 	GeeksforGeeks, “ConvNeXt,” SanchhayaEducation Private Limited, 15 July 2025. [Online]. Available: https://www.geeksforgeeks.org/computer-vision/convnext/. [Accessed 2 November 2025].
 
