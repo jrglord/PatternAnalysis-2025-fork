@@ -4,16 +4,19 @@ ConvNeXT is a modern Convolutional Neural Network (CNN) architecture that enhanc
 An example of a typical ConvNeXT structure is shown in the figure below, although for the purposes of this project's specific task, image input dimensions and subsequent block dimensions were modified, while the overall structure remained intact. The ConvNeXT block architecture and downsampling block architecture are displayed in figures 2 and 3.
 
 ![ConvNeXt-structure](https://github.com/user-attachments/assets/2107b58f-5e82-47c4-b4b0-34dcaa33c4dc)
+
 Figure 1: ConvNeXT network architecture. Source: [1]
 <br>
 <br>
 <br>
 <img width="800" height="400" alt="image" src="https://github.com/user-attachments/assets/95c679b1-ee69-480e-abe1-da7ee014ca0c" />
+
 Figure 2: ConvNeXT block architecture. Source: [1]
 <br>
 <br>
 <br>
 <img width="800" height="400" alt="image" src="https://github.com/user-attachments/assets/46d5e094-5982-4811-bce7-6bbb93dad9dd" />
+
 Figure 3: Downsampling block architecture. Source: [1]
 <br>
 <br>
@@ -27,18 +30,25 @@ Figure 4: Example input from the class AD
 # Dependencies
 In order to run this program the following dependencies need to be installed. Commands for installation are prescribed below:
 ## matplotlib 3.10.7
+
 ```
 pip install matplotlib
 ```
+
 ## Pillow 12.0.0
+
 ```
 pip install Pillow
 ```
+
 ## scikit_learn 1.7.2
+
 ```
 pip install scikit_learn
 ```
+
 ## torch 2.8.0+cu126 and torchvision 0.23.0+cu126
+
 ```
 pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu126
 ```
@@ -46,66 +56,84 @@ pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu12
 # How to Run
 ## train.py
 This program trains the network and subsequently tests it against a testing dataset.
+
 ```
 python train.py
 ```
+
 ## predict.py
 This program provides the trained model's output for a single image file as input
+
 ```
 python predict.py
 ```
+
 # Pre-proccessing and Transforms
 When loading the images into datasets, image transforms are applied during preprocessing to convert the images into tensors and add variation to ensure generalisability. For both testing and training datasets, `transforms.ToTensor()` is applied. For the training dataset, transforms of `transforms.RandomHorizontalFlip(p=0.3)` and `transforms.RandomRotation(15)` are also applied to ensure that 30% of the training images are flipped and that the images are rotated randomly within the range of -15 degrees to 15 degrees, to improve generalisability.
 
 # Training Settings
 ## Class weights
 Weights were applied to each class to account for the differences in number of images between classes in the training set (class AD had 10,400 images, while class NC had 11,120 images). This ensured that losses in each class had the same impact on the loss function. The weight of each class was the reciprocal of the number of images in that class.
+
 ```
 counts = Counter([label for _, label in full_trainset.samples])
-
 class_num_samples = torch.tensor([counts[0], counts[1]])
 class_weights = 1. / class_num_samples.float()
 class_weights = class_weights / class_weights.sum()
 ```
+
 ## Loss Function
 Cross Entropy Loss was the loss function for the network, using the weights for each class:
+
 ```
 criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
 ```
+
 ## Optimiser
 The AdamW optimiser was the implemented optimiser. This optimiser was more advantageous than the typical Adam optimiser due to the added feature of weight decay, with a weight decay of 0.05 being implemented.
+
 ```
 optimiser = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.05)
 ```
+
 ## Scheduler
 A step scheduler was applied to the learning rate for the network, ensuring that the learning rate (initially 1e-4) decreased by 10% in each epoch. This was implemented in order to stabilise training over time.
+
 ```
 scheduler = StepLR(optimiser, step_size=1, gamma=0.9)
 ```
 
 # Example run
 ## train.py
+
 ```
 Training took 4610.22504067421 secs or 76.83708401123683 mins in total
 Test Accuracy: 50.34444444444444 %
 Testing took 109.41362714767456 secs or 1.8235604524612428 mins in total
 ```
+
 <img width="1920" height="967" alt="convergence plot" src="https://github.com/user-attachments/assets/6f7152c7-129a-4a5c-866d-9baa7dffe975" />
+
 Figure 5: Convergence plot during training
+
 <img width="640" height="480" alt="comparison table" src="https://github.com/user-attachments/assets/1957628f-9748-43ce-8543-bf64bce551df" />
 
 Figure 6: Comparison table during testing
+
 ## predict.py
 Some examples of outputs for predict.py:
+
 ```
 Predicted class for recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/test/AD/388206_78.jpeg: AD
 ```
+
 ```
 Predicted class for recognition/Alzheimers_Classifier_Jack_Lord/ADNI/AD_NC/train/AD/218391_85.jpeg: AD
 ```
-# Bibliography
-[1] 	GeeksforGeeks, “ConvNeXt,” SanchhayaEducation Private Limited, 15 July 2025. [Online]. Available: https://www.geeksforgeeks.org/computer-vision/convnext/. [Accessed 2 November 2025].
 
-[2] 	Z. Liu, H. Mao, C.-Y. Wu, C. Feichtenhofer, T. Darrell and S. Xie, “A ConvNet for the 2020s,” 2 Mar 2022. [Online]. Available: https://doi.org/10.48550/arXiv.2201.03545.
+# Bibliography
+[1] 	GeeksforGeeks, "ConvNeXt," SanchhayaEducation Private Limited, 15 July 2025. [Online]. Available: https://www.geeksforgeeks.org/computer-vision/convnext/. [Accessed 2 November 2025].
+
+[2] 	Z. Liu, H. Mao, C.-Y. Wu, C. Feichtenhofer, T. Darrell and S. Xie, "A ConvNet for the 2020s," 2 Mar 2022. [Online]. Available: https://doi.org/10.48550/arXiv.2201.03545.
 
 
