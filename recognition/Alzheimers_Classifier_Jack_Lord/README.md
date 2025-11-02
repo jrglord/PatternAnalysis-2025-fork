@@ -54,10 +54,13 @@ python predict.py
 When loading the images into datasets, image transforms are applied during preprocessing to convert the images into tensors and add variation to ensure generalisability. For both testing and training datasets, `transforms.ToTensor()` is applied. For the training dataset, transforms of `transforms.RandomHorizontalFlip(p=0.3)` and `transforms.RandomRotation(15)` are also applied to ensure that 30% of the training images are flipped and that the images are rotated randomly within the range of -15 degrees to 15 degrees, to improve generalisability.
 
 # Training Settings
+## Class weights
+Weights were applied to each class to account for the differences in number of images between classes in the training set (class AD had 10,400 images, while class NC had 11,120 images). This ensured that losses in each class had the same impact on the loss function.
 ## Loss Function
+
 ## Optimiser
 ## Scheduler
-## Class weights
+
 # Example run
 ## train.py
 ## predict.py
